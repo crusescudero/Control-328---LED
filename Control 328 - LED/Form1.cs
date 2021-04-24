@@ -17,14 +17,34 @@ namespace Control_328___LED
             InitializeComponent();
         }
 
-        private void groupBox1_Enter(object sender, EventArgs e)
+        private void Form1_Load(object sender, EventArgs e)
         {
-
+            try
+            {
+                btnApagar1.Enabled = false;
+                btnApagar2.Enabled = false;
+                serialPort1.PortName = "COM13";
+                serialPort1.Open();
+            }
+            catch (Exception error)
+            {
+                MessageBox.Show(error.Message);
+            }
         }
 
-        private void label1_Click(object sender, EventArgs e)
+        private void Form1_FormClosing(object sender, FormClosingEventArgs e)
         {
-
+            if (serialPort1.IsOpen)
+            {
+                try
+                {
+                    serialPort1.Close();
+                }
+                catch (Exception error)
+                {
+                    MessageBox.Show(error.Message);
+                }
+            }
         }
 
         private void bntApagar1_Click(object sender, EventArgs e)
@@ -62,13 +82,16 @@ namespace Control_328___LED
             
         }
 
-        private void Form1_Load(object sender, EventArgs e)
+        private void btnEncender2_Click(object sender, EventArgs e)
         {
             try
             {
-                btnApagar1.Enabled = false;
-                serialPort1.PortName = "COM13";
-                serialPort1.Open();
+                //enviar codigo al arduino
+                serialPort1.WriteLine("$rele2on");
+                labelRele2.BackColor = Color.LimeGreen;
+                labelRele2.Text = "ON";
+                btnApagar2.Enabled = true;
+                btnEncender2.Enabled = false;
             }
             catch (Exception error)
             {
@@ -76,18 +99,21 @@ namespace Control_328___LED
             }
         }
 
-        private void Form1_FormClosing(object sender, FormClosingEventArgs e)
+        private void btnApagar2_Click(object sender, EventArgs e)
         {
-            if (serialPort1.IsOpen)
+
+            try
             {
-                try
-                {
-                    serialPort1.Close();
-                }
-                catch (Exception error)
-                {
-                    MessageBox.Show(error.Message);
-                }
+                //enviar codigo al arduino
+                serialPort1.WriteLine("$rele2off");
+                labelRele2.BackColor = Color.Red;
+                labelRele2.Text = "OFF";
+                btnApagar2.Enabled = false;
+                btnEncender2.Enabled = true;
+            }
+            catch (Exception error)
+            {
+                MessageBox.Show(error.Message);
             }
         }
     }
